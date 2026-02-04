@@ -50,6 +50,20 @@ def yes_no():
     else:
         print("Thats not a valid answer!")
         return
+#Ask how many characters
+    char_length = input("How long do you want your passwowrd to be? (6-15)")
+
+    try:
+        char_length = int(char_length)
+    
+    except ValueError:
+        print("Please enter a number.")
+    
+    if 6 < char_length > 15:
+        print("Choose a number within the allowed range!")
+        return
+
+
 
 
 
