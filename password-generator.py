@@ -1,7 +1,7 @@
  #import
 import random
 import string
-#Yes or no responses
+# Yes or no responses
 def yes_no():
     print("Do you want a specific word to be in your password?")
     
@@ -15,7 +15,7 @@ def yes_no():
         print("Okay, your password will be entirely random.")
     else:
         print("Thats not a valid answer.")
-        return
+        return yes_no()
 # Asking the second question
     upper_case = input("Would you like uppercase letters in your password? (yes/no)")
     
@@ -38,9 +38,9 @@ def yes_no():
         print("Alright, your password will not have any numbers.")
     else:
         print("Thats not a vaild answer!")
-        return
+        return yes_no()
     
-#Fourth question
+# Fourth question
     add_symbols = input("Do you want symbols in your password? (yes/no)")
 
     if add_symbols == "yes":
@@ -49,8 +49,8 @@ def yes_no():
         print("Alright, there will not be symbols in your password.")
     else:
         print("Thats not a valid answer!")
-        return
-#Ask how many characters
+        return yes_no()
+# Ask how many characters
     char_length = input("How long do you want your passwowrd to be? (6-15)")
 
     try:
@@ -62,6 +62,10 @@ def yes_no():
     if 6 < char_length > 15:
         print("Choose a number within the allowed range!")
         return
+
+
+# Run the program  
+yes_no()
 
 
 
