@@ -27,7 +27,7 @@ def yes_no():
             
             if upper_case == "yes":
                 characters = string.ascii_letters
-                print("Your password will now have uppercased and lowercassed letters.")
+                print("Your password will now have uppercased and lowercased letters.")
                 break
             elif upper_case == "no":
                 characters = string.ascii_lowercase
@@ -42,6 +42,7 @@ def yes_no():
             add_number = input("Do you want numbers in yoyur password (yes/no) ").lower().strip()
 
             if add_number == "yes":
+                characters += string.digits
                 print("Okay, we will add numbers to your password.")
                 break
             elif add_number == "no":
@@ -56,6 +57,7 @@ def yes_no():
             add_symbols = input("Do you want symbols in your password? (yes/no)").lower().strip()
 
             if add_symbols == "yes":
+                characters += string.punctuation
                 print("Okay, we will add symbols to your password.")
                 break
             elif add_symbols == "no":
@@ -71,12 +73,30 @@ def yes_no():
             try:
                 char_length = int(char_length)
             
+                if  6 <= char_length <= 15:
+                    break
+                else:
+                    print("Enter a number between 6-15.")
             except ValueError:
                 print("Please enter a number.")
-            
-            if  6 <= char_length <= 15:
-                break
-             
+
+# make sure the special word isn't longer than the password
+        if len(password) > char_length:
+            print("Your special word was longer than the total password lengtg.")
+            continue
+
+
+# Generate the password
+        random_char = ""
+        
+        for _ in range(char_length - len(password)):
+            random_char += random.choice(characters)
+
+        final_password = password + random_char
+        print("Your final passowrd is ")
+        print(final_password)
+        break
+           
                 
 # Run the program  
 yes_no()
