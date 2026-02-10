@@ -12,13 +12,13 @@ def password_strength(ps):
         score += 1
 
 # Character scoring
-    if any(char.isupper() for char in ps):
+    if any(c.isupper() for c in ps):
         score += 1
-    if any(char.islower() for char in ps):
+    if any(c.islower() for char in ps):
         score += 1
-    if any(char.isdigit() for char in ps):
+    if any(c.isdigit() for char in ps):
         score += 1
-    if any(char in string.punctuation for char in ps):
+    if any(c in string.punctuation for c in ps):
         score += 1
 
 # defining scoring
@@ -29,7 +29,7 @@ def password_strength(ps):
     else:
         return "Strong"
 
-# Yes or no responses
+# Ask Yes or No
 def yes_no():
     while True:
         
