@@ -67,7 +67,7 @@ def yes_no():
 
 # Asking the third question
         while True:
-            add_number = input("Do you want numbers in yoyur password (yes/no) ").lower().strip()
+            add_number = input("Do you want numbers in your password (yes/no) ").lower().strip()
 
             if add_number == "yes":
                 characters += string.digits
@@ -125,11 +125,23 @@ def yes_no():
         print(final_password)
 
         strength = password_strength(final_password)
-        print("Password_strength:", strength)
-           
-                
-# Run the program  
+# Return colors (set terminal in command prompt to see)
+        if strength == "Strong":
+            color = "\033[92m"
+        elif strength == "Decent":
+            color = "\033[93m"
+        else:
+            color = "\033[91m"
+        reset = "\033[0m"
+
+        print("Password strength:", color + strength + reset)
+        break      
+                      
 yes_no()
+
+
+
+
 
 
 
