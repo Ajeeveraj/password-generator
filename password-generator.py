@@ -1,6 +1,34 @@
  #import
 import random
 import string
+
+# Password strength checker
+def password_strength(ps):
+    score = 0
+    
+    if len(ps) >= 12:
+        score += 2
+    elif len(ps) >= 8:
+        score += 1
+
+# Character scoring
+    if any(char.isupper() for char in ps):
+        score += 1
+    if any(char.islower() for char in ps):
+        score += 1
+    if any(char.isdigit() for char in ps):
+        score += 1
+    if any(char in string.punctuation for char in ps):
+        score += 1
+
+# defining scoring
+    if score <= 2:
+        return "Weak"
+    elif score <= 4:
+        return "Decent"
+    else:
+        return "Strong"
+
 # Yes or no responses
 def yes_no():
     while True:
@@ -95,7 +123,9 @@ def yes_no():
         final_password = password + random_char
         print("Your final passowrd is ")
         print(final_password)
-        break
+
+        strength = password_strength(final_password)
+        print("Password_strength:", strength)
            
                 
 # Run the program  
