@@ -1,27 +1,28 @@
- #import
 import random
 import string
 
-# Password strength checker
+# -----------------------------
+# Password Strength Checker
+# -----------------------------
 def password_strength(ps):
     score = 0
-    
+
+    # Length scoring
     if len(ps) >= 12:
         score += 2
     elif len(ps) >= 8:
         score += 1
 
-# Character scoring
+    # Character scoring
     if any(c.isupper() for c in ps):
         score += 1
-    if any(c.islower() for char in ps):
+    if any(c.islower() for c in ps):
         score += 1
-    if any(c.isdigit() for char in ps):
+    if any(c.isdigit() for c in ps):
         score += 1
     if any(c in string.punctuation for c in ps):
         score += 1
 
-# defining scoring
     if score <= 2:
         return "Weak"
     elif score <= 4:
@@ -29,55 +30,37 @@ def password_strength(ps):
     else:
         return "Strong"
 
-# Ask Yes or No
-def yes_no():
+
+# -----------------------------
+# Ask Yes/No
+# -----------------------------
+def ask_yes_no(prompt):
     while True:
-        
-        while True:
-            
-            user_input = input("Would you like to have a specific word in your password.(yes/no) ").lower().strip()
-            password = ""
-            
-            if user_input == "yes":
-                
-                print("Okay, we'll add that word to your password.")
-                password = input("Please enter your word. ")
-                break
-            elif user_input == "no":
-                print("Okay, your password will be entirely random.")
-                break
-            else:
-                print("Thats not a valid answer.")
-            
-# Asking the second question
-        while True:
-            upper_case = input("Would you like uppercase letters in your password? (yes/no)").lower().strip()
-            
-            if upper_case == "yes":
-                characters = string.ascii_letters
-                print("Your password will now have uppercased and lowercased letters.")
-                break
-            elif upper_case == "no":
-                characters = string.ascii_lowercase
-                print("Okay, your password will be made up of only lowercase letters.")
-                break
-            else:
-                print("Type yes or no.")
+        ans = input(prompt).lower().strip()
+        if ans in ("yes", "no"):
+            return ans
+        print("Please type yes or no.")
+
+
+# Defining password generator function
+def generate_password():
+        # Ask if user wants a special word
+        password = ""
+        if ask_yes_no("Do you want a special word in your password? (yes/no)") == "yes":
+            password = input("Enter your special word: ").strip()
+            print("Okay we will add your special word to the password.")
+        else:
+            print("Alright we will not add a special word to your password.")
                 
 
-# Asking the third question
-        while True:
-            add_number = input("Do you want numbers in your password (yes/no) ").lower().strip()
+# Asking the secound question
+    characters = string.ascii_lowercase
+    if ask_yes_no("Do you want uppercase letters in your password? (yes/no)") == "yes":
+        characters += string.ascii_uppercase
+        print("Okay we will add uppercase letters to your password.")
+    else:
+        print("Alright, there will not be uppercase letters in your password.")
 
-            if add_number == "yes":
-                characters += string.digits
-                print("Okay, we will add numbers to your password.")
-                break
-            elif add_number == "no":
-                print("Alright, your password will not have any numbers.")
-                break
-            else:
-                print("Thats not a vaild answer!")
                 
         
 # Fourth question
