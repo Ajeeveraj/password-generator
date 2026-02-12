@@ -1,6 +1,15 @@
 import random
 import string
 
+# Color coding
+red = "\033[91m"
+green = "\033[92m"
+orange = "\033[93m"
+reset = "\033[0m"
+
+# password history
+password_history = []
+
 # Password strength check
 def password_strength(ps):
     score = 0
@@ -34,7 +43,7 @@ def ask_yes_no(prompt):
         if ans in ("yes", "no"):
             return ans
         else:
-            print("Please type yes or no.")
+            print(red + "Please type yes or no."+ reset)
 
 
 # Defining password generator function
@@ -43,33 +52,33 @@ def generate_password():
     password = ""
     if ask_yes_no("Do you want a special word in your password? (yes/no)") == "yes":
         password = input("Enter your special word: ").strip()
-        print("Okay we will add your special word to the password.")
+        print(green + "Okay we will add that to the password." + reset)
     else:
-        print("Alright we will not add a special word to your password.")
+        print(green + "Alright we will not add a special word to your password." + reset)
                 
 
     # Asking the secound question
     characters = string.ascii_lowercase
     if ask_yes_no("Do you want uppercase letters in your password? (yes/no)") == "yes":
         characters += string.ascii_uppercase
-        print("Okay we will add uppercase letters to your password.")
+        print(green + "Okay we will add uppercase letters to your password." + reset)
     else:
-        print("Alright, there will not be uppercase letters in your password.")
+        print(green + "Alright, there will not be uppercase letters in your password." + reset)
 
                         
     # Third question
     add_symbols = ask_yes_no("Do you want symbols in your password? (yes/no)")
     if add_symbols == "yes":
         characters += string.punctuation
-        print("Okay, we will add symbols to your password.")
+        print(green + "Okay, we will add symbols to your password." + reset)
     else:
-        print("Alright there will not be symbols in your password.")
+        print(green + "Alright there will not be symbols in your password." + reset)
 
     # Fourth question
     if ask_yes_no("Do you want numbers in your password? (yes/no)") == "yes":
         characters += string.digits
     else:
-        print("Okay your password will not include numbers!")
+        print(green + "Okay your password will not include numbers!" + reset)
 
     # Ask how many characters
     while True:
@@ -79,48 +88,71 @@ def generate_password():
             if 6 <= char_length <= 15:
                 break
             else:
-                print("Enter a number between 6-15.")
+                print(red + "Enter a number between 6-15." + reset)
         except ValueError:
-            print("Please enter a number.")
+            print(red + "Please enter a number." + reset)
 
 
     # make sure the special word isn't longer than the password
     if len(password) > char_length:
-        print("Your special word was longer than the total password lengtg.")
+        print(red + "Your special word was longer than the total password length." + reset)
         return
 
 
     # Generate the password
+    
+    random_char = ""
+    for _ in range(char_length - len(password)):
+        random_char += random.choice(characters)
+
+    final_password = password + random_char
+    print("Your final passowrd is ")
+    print(final_password)
+
+    strength = password_strength(final_password)
+    
+    # Add password to history
+    password_history.append(final_password)
+    
+    
+    # show strength and return colors (need terminal in command prompt to see)
+    if strength == "Strong":
+        color = "\033[92m"
+    elif strength == "Decent":
+        color = "\033[93m"
+    else:
+        color = "\033[91m"
+        
+
+    print("Password strength:", color + strength + reset)
+
+# view password history
+def view_history():
+    if not password_history:
+        print(red + "You have no passwords!" + reset)
+        return
+    print("\nPassword history:")
+    for index, pw in enumerate(password_history, start=1):
+        print(f"{index}. {pw}")
+# Main menu
+def main_menu():
     while True:
-        random_char = ""
-        for _ in range(char_length - len(password)):
-            random_char += random.choice(characters)
+        print("\n Password Generator Menu")
+        print("1. Generate a new password")
+        print("2. View password history")
+        print("3. exit")
+        choice = input("Enter your choice (1,2, or 3): ").strip()
 
-        final_password = password + random_char
-        print("Your final passowrd is ")
-        print(final_password)
-
-        strength = password_strength(final_password)
-    
-    
-    # Return colors (set terminal in command prompt to see)
-        if strength == "Strong":
-            color = "\033[92m"
-        elif strength == "Decent":
-            color = "\033[93m"
+        if choice == "1":
+            generate_password()
+        elif choice == "2":
+            view_history()
+        elif choice == "3":
+            print(green + "Thank you for using the password generator!" + reset)
         else:
-            color = "\033[91m"
-        reset = "\033[0m"
+            print(red + "Please enter 1,2, or 3" + reset)
 
-        print("Password strength:", color + strength + reset)
-
-    # Ask to regenerate password
-        if ask_yes_no("Do you want to regenerate the password? (yes/no)") == "yes":
-            continue
-        else:
-            break 
-
-generate_password()
+main_menu()
 
 
 
