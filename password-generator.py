@@ -4,7 +4,8 @@ import string
 # Color coding
 red = "\033[91m"
 green = "\033[92m"
-orange = "\033[93m"
+yellow = "\033[93m"
+cyan = "\033[96m"
 reset = "\033[0m"
 
 # password history
@@ -69,20 +70,31 @@ def generate_password():
     # Third question
     add_symbols = ask_yes_no("Do you want symbols in your password? (yes/no)")
     if add_symbols == "yes":
-        characters += string.punctuation
+        symbols = string.punctuation
         print(green + "Okay, we will add symbols to your password." + reset)
+    # Remove weird symbols
+    remove_uncommon = ask_yes_no("Do you want to remove uncommon symbols? (yes/no)")
+    if remove_uncommon == "yes":
+        allowed = "!@#$%&*?-_=+"
+        symbols = "".join(c for c in symbols if c in allowed)
+        print(green + "Okay we will remove weird symbols!" + reset)
     else:
         print(green + "Alright there will not be symbols in your password." + reset)
 
     # Fourth question
-    if ask_yes_no("Do you want numbers in your password? (yes/no)") == "yes":
+    add_numbers = ask_yes_no("Do you want numbers in your password? (yes/no) ")
+
+    if add_numbers == "yes":
         characters += string.digits
+        print(green + "Great! Your password will include numbers." + reset)
     else:
         print(green + "Okay your password will not include numbers!" + reset)
+    
+    
 
     # Ask how many characters
     while True:
-        char_length = input("How long do you want your passwowrd to be? (6-15)")
+        char_length = input("How long do you want your passwowrd to be? (6-15) ")
         try:
             char_length = int(char_length)
             if 6 <= char_length <= 15:
@@ -107,7 +119,7 @@ def generate_password():
 
     final_password = password + random_char
     print("Your final passowrd is ")
-    print(final_password)
+    print(cyan + final_password + reset)
 
     strength = password_strength(final_password)
     
@@ -137,7 +149,7 @@ def view_history():
 # Main menu
 def main_menu():
     while True:
-        print("\n Password Generator Menu")
+        print(green +"\n Password Generator Menu" + reset)
         print("1. Generate a new password")
         print("2. View password history")
         print("3. exit")
@@ -149,6 +161,7 @@ def main_menu():
             view_history()
         elif choice == "3":
             print(green + "Thank you for using the password generator!" + reset)
+            break
         else:
             print(red + "Please enter 1,2, or 3" + reset)
 
