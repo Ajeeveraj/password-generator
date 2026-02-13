@@ -39,9 +39,40 @@ def password_strength(ps):
     else:
         return "Strong"
     
-    # difficulty to remember
+    # difficulty to remember based on length
+def password_memorability(final_password, special_word):
+    score = 0
 
+    if len(final_password) >= 14:
+        score += 2
+    elif len(final_password) >= 10:
+        score += 1
 
+    # difficulty to remmember baased on ammount of character types
+    symbol_count = sum(1 for c in final_password if c in string.punctuation)
+    if symbol_count >= 3:
+        score += 2
+    elif symbol_count >= 1:
+        score += 1
+
+    number_count = sum(1 for c in final_password if c.isdigit())
+    if number_count >= 3:
+        score += 2
+    elif number_count >= 1:
+        score += 1
+
+    # harder to remember if no special word
+    if not special_word:
+        score += 2
+
+    if score <= 2:
+        return "Easy"
+    elif score <= 5:
+        return "Moderate"
+    else:
+        return "Hard"
+    
+    # Ask yes or no questions
 def ask_yes_no(prompt):
     while True:
         ans = input(prompt).lower().strip()
@@ -64,10 +95,12 @@ def generate_password():
                 
     # Mandatory characters
     mandatory_chars = []
+
     # Asking the secound question
     characters = string.ascii_lowercase
     if ask_yes_no("Do you want uppercase letters in your password? (yes/no)") == "yes":
         mandatory_chars.append(secrets.choice(string.ascii_uppercase))
+        characters += string.ascii_uppercase
         print(green + "Okay we will add uppercase letters to your password." + reset)
     else:
         print(green + "Alright, there will not be uppercase letters in your password." + reset)
@@ -85,7 +118,7 @@ def generate_password():
         if remove_uncommon == "yes":
             allowed = "!@#$%&*?-_=+"
             symbols = "".join(c for c in symbols if c in allowed)
-            print(green + "Uncommon symbols removed")
+            print(green + "Uncommon symbols removed" + reset)
 
         characters += symbols
         mandatory_chars.append(secrets.choice(symbols))
@@ -126,22 +159,30 @@ def generate_password():
     # Generate the password
 
     remaining_length = password_length - len(special_word) - len(mandatory_chars)
+
+    if remaining_length < 0:
+        print(red + "Password length is too short for the special word and mandatory characters." + reset)
+        return
+    
     random_chars = "".join(secrets.choice(characters) for _ in range(remaining_length))
 
-    final_password_list = list(special_word + "".join(mandatory_chars) + random_chars)
-    secrets.SystemRandom().shuffle(final_password_list)
-    final_password = "".join(final_password_list)
+    other_chars = list("".join(mandatory_chars) + random_chars)
+    secrets.SystemRandom().shuffle(other_chars)
 
+    final_password = special_word + "".join(other_chars)
     print("Your final password is...")
     print(cyan + final_password + reset)
 
     strength = password_strength(final_password)
+
+    # Check memorability
+    memorability = password_memorability(final_password, special_word)
     
     # Add password to history
     password_history.append(final_password)
     
     
-    # show strength and return colors (need terminal in command prompt to see)
+    # show strength and return colors
     if strength == "Strong":
         color = "\033[92m"
     elif strength == "Decent":
@@ -151,6 +192,16 @@ def generate_password():
         
 
     print("Password strength:", color + strength + reset)
+
+    # Show memorability
+    if memorability == "Easy":
+        mem_color = green
+    elif memorability == "Moderate":
+        mem_color = yellow
+    else:
+        mem_color = red
+
+    print("Difficulty to remember:", mem_color + memorability + reset)
 
 # view password history
 def view_history():
