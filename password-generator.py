@@ -53,6 +53,7 @@ def ask_yes_no(prompt):
 
 # Defining password generator function
 def generate_password():
+
     # Ask if user wants a special word
     special_word = ""
     if ask_yes_no("Do you want a special word in your password? (yes/no)") == "yes":
@@ -125,9 +126,9 @@ def generate_password():
     # Generate the password
 
     remaining_length = password_length - len(special_word) - len(mandatory_chars)
-    random_char = "".join(secrets.choice(characters) for _ in range(remaining_length))
+    random_chars = "".join(secrets.choice(characters) for _ in range(remaining_length))
 
-    final_password_list = list(special_word + "".join(mandatory_chars) + random_char)
+    final_password_list = list(special_word + "".join(mandatory_chars) + random_chars)
     secrets.SystemRandom().shuffle(final_password_list)
     final_password = "".join(final_password_list)
 
