@@ -2,15 +2,15 @@ import secrets #More safe than import random
 import string
 
 # Color coding
-red = "\033[91m"
-green = "\033[92m"
-yellow = "\033[93m"
-cyan = "\033[96m"
-reset = "\033[0m"
+colors = {
+    "red": "\033[91m",
+    "green": "\033[92m",
+    "yellow": "\033[93m",
+    "cyan": "\033[96m",
+    "reset": "\033[0m"
+}
 
 
-# password history
-password_history = []
 
 # Password strength check
 def password_strength(ps):
@@ -32,14 +32,11 @@ def password_strength(ps):
     if any(c in string.punctuation for c in ps):
         score += 1
 
-    if score <= 2:
-        return "Weak"
-    elif score <= 4:
-        return "Decent"
-    else:
-        return "Strong"
-    
-    # difficulty to remember based on length
+    # scoring results
+    return "Weak" if score <= 2 else ("Decent" if score <= 4 else "Strong")
+
+
+# difficulty to remember based on length
 def password_memorability(final_password, special_word):
     score = 0
 
@@ -79,19 +76,18 @@ def ask_yes_no(prompt):
         if ans in ("yes", "no"):
             return ans
         else:
-            print(red + "Please type yes or no."+ reset)
-
+            print(colors["red"] + "Please type yes or no."+ colors["reset"])
 
 # Defining password generator function
-def generate_password():
+def generate_password(password_history):
 
     # Ask if user wants a special word
     special_word = ""
     if ask_yes_no("Do you want a special word in your password? (yes/no)") == "yes":
         special_word = input("Enter your special word: ").strip()
-        print(green + "Okay we will add that to the password." + reset)
+        print(colors["green"] + "Okay we will add that to the password." + colors["reset"])
     else:
-        print(green + "Alright we will not add a special word to your password." + reset)
+        print(colors["green"] + "Alright we will not add a special word to your password." + colors["reset"])
                 
     # Mandatory characters
     mandatory_chars = []
@@ -101,9 +97,9 @@ def generate_password():
     if ask_yes_no("Do you want uppercase letters in your password? (yes/no)") == "yes":
         mandatory_chars.append(secrets.choice(string.ascii_uppercase))
         characters += string.ascii_uppercase
-        print(green + "Okay we will add uppercase letters to your password." + reset)
+        print(colors["green"] + "Okay we will add uppercase letters to your password." + colors["reset"])
     else:
-        print(green + "Alright, there will not be uppercase letters in your password." + reset)
+        print(colors["green"] + "Alright, there will not be uppercase letters in your password." + colors["reset"])
 
                         
     # Third question
@@ -111,19 +107,19 @@ def generate_password():
 
     if add_symbols == "yes":
         symbols = string.punctuation
-        print(green + "Okay, we will add symbols to your password." + reset)
+        print(colors["green"] + "Okay, we will add symbols to your password." + colors["reset"])
     # Remove weird symbols
         remove_uncommon = ask_yes_no("Do you want to remove uncommon symbols? (yes/no)")
 
         if remove_uncommon == "yes":
             allowed = "!@#$%&*?-_=+"
             symbols = "".join(c for c in symbols if c in allowed)
-            print(green + "Uncommon symbols removed" + reset)
+            print(colors["green"] + "Uncommon symbols removed" + colors["reset"])
 
         characters += symbols
         mandatory_chars.append(secrets.choice(symbols))
     else:
-        print(green + "Alright there will not be symbols in your password." + reset)
+        print(colors["green"] + "Alright there will not be symbols in your password." + colors["reset"])
 
     # Fourth question
     add_numbers = ask_yes_no("Do you want numbers in your password? (yes/no) ")
@@ -131,9 +127,9 @@ def generate_password():
     if add_numbers == "yes":
         characters += string.digits
         mandatory_chars.append(secrets.choice(string.digits))
-        print(green + "Great! Your password will include numbers." + reset)
+        print(colors["green"] + "Great! Your password will include numbers." + colors["reset"])
     else:
-        print(green + "Okay your password will not include numbers!" + reset)
+        print(colors["green"] + "Okay your password will not include numbers!" + colors["reset"])
     
     
 
@@ -145,91 +141,119 @@ def generate_password():
             if 6 <= password_length <= 15:
                 break
             else:
-                print(red + "Enter a number between 6-15." + reset)
+                print(colors["red"] + "Enter a number between 6-15." + colors["reset"])
         except ValueError:
-            print(red + "Please enter a number." + reset)
+            print(colors["red"] + "Please enter a number." + colors["reset"])
 
-
-    # make sure the special word isn't longer than the password
-    if len(special_word) > password_length:
-        print(red + "Your special word was longer than the total password length." + reset)
-        return
-
-
-    # Generate the password
-
-    remaining_length = password_length - len(special_word) - len(mandatory_chars)
-
-    if remaining_length < 0:
-        print(red + "Password length is too short for the special word and mandatory characters." + reset)
+    # Checking special word and added characters isn't longer than password length
+    if len(special_word) + len(mandatory_chars) > password_length:
+        print(colors["red"] + "Password length is too short for special word and mandatory characters.")
         return
     
+    # Generate password
+    remaining_length = password_length - len(special_word) - len(mandatory_chars)
     random_chars = "".join(secrets.choice(characters) for _ in range(remaining_length))
-
     other_chars = list("".join(mandatory_chars) + random_chars)
     secrets.SystemRandom().shuffle(other_chars)
 
     final_password = special_word + "".join(other_chars)
     print("Your final password is...")
-    print(cyan + final_password + reset)
+    print(colors["cyan"] + final_password + colors["reset"])
 
     strength = password_strength(final_password)
 
     # Check memorability
     memorability = password_memorability(final_password, special_word)
+
+    #password statistics
+    password_stats = {
+        "uppercase": sum(c.isupper() for c in final_password),
+        "lowercase": sum(c.islower() for c in final_password),
+        "digits": sum(c.isdigit() for c in final_password),
+        "symbols": sum(c in string.punctuation for c in final_password)
+    }
     
     # Add password to history
-    password_history.append(final_password)
+    password_history.append({
+        "password": final_password,
+        "strength": strength,
+        "memorability": memorability,
+        "length": len(final_password),
+        "stats": password_stats
+    })
     
     
     # show strength and return colors
-    if strength == "Strong":
-        color = "\033[92m"
-    elif strength == "Decent":
-        color = "\033[93m"
-    else:
-        color = "\033[91m"
+    strength_colors = {
+        "Strong": colors["green"],
+        "Decent": colors["yellow"],
+        "Weak": colors["red"]
+    }
+
+    color = strength_colors[strength]
         
 
-    print("Password strength:", color + strength + reset)
+    print("Password strength:", color + strength + colors["reset"])
 
     # Show memorability
-    if memorability == "Easy":
-        mem_color = green
-    elif memorability == "Moderate":
-        mem_color = yellow
-    else:
-        mem_color = red
+    memorability_colors = {
+        "Easy": colors["green"],
+        "Moderate": colors["yellow"],
+        "Hard": colors["red"]
+    }
 
-    print("Difficulty to remember:", mem_color + memorability + reset)
+    mem_color = memorability_colors[memorability]
+
+    print("Difficulty to remember:", mem_color + memorability + colors["reset"])
 
 # view password history
-def view_history():
+def view_history(password_history):
     if not password_history:
-        print(red + "You have no passwords!" + reset)
+        print(colors["red"] + "You have no passwords!" + colors["reset"])
         return
     print("\nPassword history:")
-    for index, pw in enumerate(password_history, start=1):
-        print(f"{index}. {pw}")
+    for index, entry in enumerate(password_history, start=1):
+        print(f"{index}. {entry['password']}")
+        print(f" Strength: {entry['strength']}")
+        print(f" Memorability: {entry['memorability']}")
+        print(f" Length: {entry['length']}")
+
+        stats = entry["stats"]
+        print(f" Stats: UPPER={stats['uppercase']}, "
+              f"lower={stats['lowercase']}, "
+              f"digits={stats['digits']}, "
+              f"symbols={stats['symbols']}")
+
+   
 # Main menu
 def main_menu():
+    password_history = []
+
+    menu_options = (
+    ("1", "Generate a new password", generate_password),
+    ("2", "View password history", view_history),
+    ("3", "Exit", None)
+    )
+
     while True:
-        print(green +"\n Password Generator Menu" + reset)
-        print("1. Generate a new password")
-        print("2. View password history")
-        print("3. exit")
+        print(colors["green"] +"\n Password Generator Menu" + colors["reset"])
+
+        # display menu
+        for num, description, _ in menu_options:
+            print(f"{num}. {description}")
+
         choice = input("Enter your choice (1,2, or 3): ").strip()
 
-        if choice == "1":
-            generate_password()
-        elif choice == "2":
-            view_history()
-        elif choice == "3":
-            print(green + "Thank you for using the password generator!" + reset)
-            break
+        for number, _, funct in menu_options:
+            if choice == number:
+                if funct:
+                    funct(password_history)
+                else:
+                    print(colors["green"] + "Thank you for using the password generator!" + colors["reset"])
+                    return
+                break
         else:
-            print(red + "Please enter 1,2, or 3" + reset)
-
+            print(colors["red"] + "Please enter one of the options" + colors["reset"])
 main_menu()
 
 
