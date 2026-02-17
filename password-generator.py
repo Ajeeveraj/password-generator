@@ -83,7 +83,7 @@ def generate_password(password_history):
 
     # Ask if user wants a special word
     special_word = ""
-    if ask_yes_no("Do you want a special word in your password? (yes/no) ") == "yes":
+    if ask_yes_no("\n\nDo you want a special word in your password? (yes/no) ") == "yes":
         special_word = input("Enter your special word: ").strip()
         print(colors["green"] + "Okay we will add that to the password." + colors["reset"])
     else:
@@ -94,7 +94,7 @@ def generate_password(password_history):
 
     # Asking the second question
     characters = string.ascii_lowercase
-    if ask_yes_no("Do you want uppercase letters in your password? (yes/no) ") == "yes":
+    if ask_yes_no("\nDo you want uppercase letters in your password? (yes/no) ") == "yes":
         mandatory_chars.append(secrets.choice(string.ascii_uppercase))
         characters += string.ascii_uppercase
         print(colors["green"] + "Okay we will add uppercase letters to your password." + colors["reset"])
@@ -103,13 +103,13 @@ def generate_password(password_history):
 
                         
     # Third question
-    add_symbols = ask_yes_no("Do you want symbols in your password? (yes/no) ")
+    add_symbols = ask_yes_no("\nDo you want symbols in your password? (yes/no) ")
 
     if add_symbols == "yes":
         symbols = string.punctuation
         print(colors["green"] + "Okay, we will add symbols to your password." + colors["reset"])
     # Remove weird symbols
-        remove_uncommon = ask_yes_no("Do you want to remove uncommon symbols? (yes/no)")
+        remove_uncommon = ask_yes_no("Do you want to remove uncommon symbols? (yes/no) ")
 
         if remove_uncommon == "yes":
             allowed = "!@#$%&*?-_=+"
@@ -123,7 +123,7 @@ def generate_password(password_history):
         print(colors["green"] + "Alright there will not be symbols in your password." + colors["reset"])
 
     # Fourth question
-    add_numbers = ask_yes_no("Do you want numbers in your password? (yes/no) ")
+    add_numbers = ask_yes_no("\nDo you want numbers in your password? (yes/no) ")
 
     if add_numbers == "yes":
         characters += string.digits
@@ -136,7 +136,7 @@ def generate_password(password_history):
 
     # Ask how many characters
     while True:
-        password_length = input("How long do you want your password to be? (7-15) ")
+        password_length = input("\nHow long do you want your password to be? (7-15) ")
         try:
             password_length = int(password_length)
             if 7 <= password_length <= 15:
@@ -214,14 +214,14 @@ def view_history(password_history):
         return
     print("\nPassword history:")
     for index, entry in enumerate(password_history, start=1):
-        print(f"{index}. {entry['password']}")
+        print(f"\n\n{index}. {entry['password']}")
         print(f" Strength: {entry['strength']}")
         print(f" Memorability: {entry['memorability']}")
         print(f" Length: {entry['length']}")
 
         stats = entry["stats"]
-        print(f" Stats: UPPER={stats['uppercase']}, "
-              f"lower={stats['lowercase']}, "
+        print(f" Stats: UPPERCASE={stats['uppercase']}, "
+              f"lowercase={stats['lowercase']}, "
               f"digits={stats['digits']}, "
               f"symbols={stats['symbols']}")
 
