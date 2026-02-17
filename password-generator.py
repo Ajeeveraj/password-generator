@@ -133,7 +133,6 @@ def generate_password(password_history):
         print(colors["green"] + "Okay your password will not include numbers!" + colors["reset"])
     
     
-
     # Ask how many characters
     while True:
         password_length = input("\nHow long do you want your password to be? (7-15) ")
@@ -195,6 +194,7 @@ def generate_password(password_history):
         
 
     print("Password strength:", color + strength + colors["reset"])
+
 
     # Show memorability
     memorability_colors = {
