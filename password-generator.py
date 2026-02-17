@@ -83,7 +83,7 @@ def generate_password(password_history):
 
     # Ask if user wants a special word
     special_word = ""
-    if ask_yes_no("Do you want a special word in your password? (yes/no)") == "yes":
+    if ask_yes_no("Do you want a special word in your password? (yes/no) ") == "yes":
         special_word = input("Enter your special word: ").strip()
         print(colors["green"] + "Okay we will add that to the password." + colors["reset"])
     else:
@@ -94,7 +94,7 @@ def generate_password(password_history):
 
     # Asking the second question
     characters = string.ascii_lowercase
-    if ask_yes_no("Do you want uppercase letters in your password? (yes/no)") == "yes":
+    if ask_yes_no("Do you want uppercase letters in your password? (yes/no) ") == "yes":
         mandatory_chars.append(secrets.choice(string.ascii_uppercase))
         characters += string.ascii_uppercase
         print(colors["green"] + "Okay we will add uppercase letters to your password." + colors["reset"])
@@ -103,7 +103,7 @@ def generate_password(password_history):
 
                         
     # Third question
-    add_symbols = ask_yes_no("Do you want symbols in your password? (yes/no)")
+    add_symbols = ask_yes_no("Do you want symbols in your password? (yes/no) ")
 
     if add_symbols == "yes":
         symbols = string.punctuation
@@ -115,7 +115,8 @@ def generate_password(password_history):
             allowed = "!@#$%&*?-_=+"
             symbols = "".join(c for c in symbols if c in allowed)
             print(colors["green"] + "Uncommon symbols removed" + colors["reset"])
-
+        elif remove_uncommon == "no":
+            print(colors["green"] + "Alrght we will keep all symbols." + colors["reset"])
         characters += symbols
         mandatory_chars.append(secrets.choice(symbols))
     else:
