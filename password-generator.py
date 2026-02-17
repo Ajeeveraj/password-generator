@@ -45,7 +45,7 @@ def password_memorability(final_password, special_word):
     elif len(final_password) >= 10:
         score += 1
 
-    # difficulty to remmember baased on ammount of character types
+    # difficulty to remember based on amount of character types
     symbol_count = sum(1 for c in final_password if c in string.punctuation)
     if symbol_count >= 3:
         score += 2
@@ -92,7 +92,7 @@ def generate_password(password_history):
     # Mandatory characters
     mandatory_chars = []
 
-    # Asking the secound question
+    # Asking the second question
     characters = string.ascii_lowercase
     if ask_yes_no("Do you want uppercase letters in your password? (yes/no)") == "yes":
         mandatory_chars.append(secrets.choice(string.ascii_uppercase))
@@ -135,13 +135,13 @@ def generate_password(password_history):
 
     # Ask how many characters
     while True:
-        password_length = input("How long do you want your passwowrd to be? (6-15) ")
+        password_length = input("How long do you want your password to be? (7-15) ")
         try:
             password_length = int(password_length)
-            if 6 <= password_length <= 15:
+            if 7 <= password_length <= 15:
                 break
             else:
-                print(colors["red"] + "Enter a number between 6-15." + colors["reset"])
+                print(colors["red"] + "Enter a number between 7-15." + colors["reset"])
         except ValueError:
             print(colors["red"] + "Please enter a number." + colors["reset"])
 
@@ -246,7 +246,7 @@ def main_menu():
 
         for number, _, funct in menu_options:
             if choice == number:
-                if funct:
+                if callable(funct):
                     funct(password_history)
                 else:
                     print(colors["green"] + "Thank you for using the password generator!" + colors["reset"])
